@@ -6,11 +6,7 @@ use dotenvy::dotenv;
 mod vars;
 mod schema;
 mod models;
-
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
-}
+mod routes;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -21,7 +17,7 @@ async fn main() -> std::io::Result<()> {
         .expect("Failed to create a database connection pool.");
     HttpServer::new(|| {
         App::new()
-            .service(hello)
+            .service(routes::register_handler::hello)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
