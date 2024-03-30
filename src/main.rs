@@ -1,4 +1,11 @@
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{get, App, HttpResponse, HttpServer, Responder};
+use diesel::{r2d2::{self, ConnectionManager}, PgConnection};
+use dotenvy::dotenv;
+
+
+mod vars;
+mod schema;
+mod models;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -7,6 +14,11 @@ async fn hello() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    dotenv().ok();
+    let manager = ConnectionManager::<PgConnection>::new(vars::database_url());
+    let pool: models::Pool = r2d2::Pool::builder()
+        .build(manager)
+        .expect("Failed to create a database connection pool.");
     HttpServer::new(|| {
         App::new()
             .service(hello)
