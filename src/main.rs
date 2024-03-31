@@ -1,4 +1,4 @@
-use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpServer};
 use diesel::{r2d2::{self, ConnectionManager}, PgConnection};
 use dotenvy::dotenv;
 
@@ -19,7 +19,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(pool.clone()))
-            .service(routes::register_handler::hello)
+            .service(routes::register_handler::register_user)
     })
     .bind(("127.0.0.1", 8080))?
     .run()
